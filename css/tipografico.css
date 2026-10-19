@@ -1,0 +1,122 @@
+/* ==========================================================================
+   DISEÑO TIPOGRÁFICO
+   --------------------------------------------------------------------------
+   Estrategia: una única familia con niveles distintos de realce.
+   - Familia: fuentes estándar del sistema (system-ui). No se descarga ninguna
+     fuente y cada sistema usa su tipografía de interfaz, muy legible.
+   - Tamaños: escala modular de razón 1.25 a partir de 1rem; cada nivel se
+     obtiene con calc() a partir del anterior.
+   - Pesos: solo tres (normal, medio y fuerte).
+   - Jerarquía (principios de contraste y jerarquía):
+       Nivel 1  Títulos (h1, h2) ............ texto-xl/xxl · peso fuerte
+       Nivel 2  Leyendas de grupo ............ texto-s · peso fuerte · MAYÚSCULAS
+       Nivel 3  Etiquetas y botones .......... texto-s/m · peso medio
+       Nivel 4  Texto de lectura ............. texto-m · peso normal
+   - Las mayúsculas se reservan para las leyendas (funcionan como títulos).
+   ========================================================================== */
+:root {
+    --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+    /* Escala modular (razón 1.25) */
+    --escala: 1.25;
+    --texto-m: 1rem;
+    --texto-s: calc(var(--texto-m) / var(--escala));     /* 0.8rem   */
+    --texto-l: calc(var(--texto-m) * var(--escala));     /* 1.25rem  */
+    --texto-xl: calc(var(--texto-l) * var(--escala));    /* 1.56rem  */
+    --texto-xxl: calc(var(--texto-xl) * var(--escala));  /* 1.95rem  */
+
+    /* Pesos */
+    --peso-normal: 400;
+    --peso-medio: 600;
+    --peso-fuerte: 800;
+
+    /* Interlineado y espaciado entre letras */
+    --interlineado: 1.5;
+    --interlineado-titulo: 1.2;
+    --tracking-titulo: -0.03em;
+    --tracking-mayusculas: 0.08em;
+}
+
+/* Nivel 4: texto de lectura (se hereda en toda la página) */
+body {
+    font-family: var(--fuente);
+    font-size: var(--texto-m);
+    font-weight: var(--peso-normal);
+    line-height: var(--interlineado);
+}
+
+/* Los controles de formulario no heredan la fuente por defecto */
+button,
+input,
+select {
+    font: inherit;
+}
+
+strong {
+    font-weight: var(--peso-medio);
+}
+
+/* Nivel 1: títulos */
+h1,
+h2 {
+    font-weight: var(--peso-fuerte);
+    line-height: var(--interlineado-titulo);
+}
+
+.marca h1 {
+    font-size: var(--texto-xl);
+    letter-spacing: var(--tracking-titulo);
+}
+
+.modal-cabecera h2 {
+    font-size: var(--texto-xl);
+}
+
+.contenido-victoria h2 {
+    font-size: var(--texto-xxl);
+}
+
+.capa-victoria {
+    text-align: center;
+}
+
+/* Nivel 2: leyendas de los grupos de ajustes */
+.grupo-ajustes legend {
+    font-size: var(--texto-s);
+    font-weight: var(--peso-fuerte);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-mayusculas);
+}
+
+.insignia {
+    font-size: var(--texto-s);
+    font-weight: var(--peso-fuerte);
+    letter-spacing: var(--tracking-mayusculas);
+}
+
+/* Nivel 3: etiquetas, opciones y botones */
+.etiqueta,
+.selector-segmentado span {
+    font-size: var(--texto-s);
+    font-weight: var(--peso-medio);
+}
+
+.boton {
+    font-weight: var(--peso-medio);
+}
+
+.boton-icono {
+    font-size: var(--texto-xl);
+    line-height: 1;
+}
+
+[data-ayuda]::after {
+    font-size: var(--texto-s);
+    white-space: nowrap;
+}
+
+.aviso {
+    font-size: var(--texto-s);
+    font-weight: var(--peso-medio);
+    text-align: center;
+}

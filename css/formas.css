@@ -1,0 +1,36 @@
+/* ==========================================================================
+   FORMAS DE LAS FICHAS
+   --------------------------------------------------------------------------
+   Cada juego de formas asigna una forma distinta a cada tipo de ficha, de modo que los
+   tipos se distinguen por forma además de por color (Gestalt: semejanza).
+   La forma se dibuja sobre el pseudoelemento ::before de la ficha.
+   ========================================================================== */
+
+/* Formas "geometrico": círculo, cuadrado y triángulo */
+.tablero[data-formas="geometrico"] .ficha[data-tipo="1"]::before {
+    border-radius: 50%;
+}
+
+.tablero[data-formas="geometrico"] .ficha[data-tipo="2"]::before {
+    border-radius: var(--radio-s);
+}
+
+.tablero[data-formas="geometrico"] .ficha[data-tipo="3"]::before {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* Formas "suave": píldora, rombo y hoja */
+.tablero[data-formas="suave"] .ficha[data-tipo="1"]::before {
+    inset: 22% 0;
+    border-radius: 999px;
+}
+
+.tablero[data-formas="suave"] .ficha[data-tipo="2"]::before {
+    inset: 15%;
+    border-radius: var(--radio-s);
+    transform: rotate(45deg);
+}
+
+.tablero[data-formas="suave"] .ficha[data-tipo="3"]::before {
+    border-radius: 50% 0;
+}

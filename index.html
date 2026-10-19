@@ -4,78 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proyecto Tablero | Juego de Estrategia</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Estilos separados por aspecto: cada propiedad CSS vive en el fichero de su aspecto -->
+    <link rel="stylesheet" href="css/espacial.css">
+    <link rel="stylesheet" href="css/tipografico.css">
+    <link rel="stylesheet" href="css/cromatico.css">
+    <link rel="stylesheet" href="css/formas.css">
+    <link rel="stylesheet" href="css/posicionamiento.css">
+    <link rel="stylesheet" href="css/interaccion.css">
 </head>
 <body>
-    <div class="app-layout">
+    <div class="aplicacion">
         <!-- Encabezado Principal -->
-        <header class="app-header">
-            <div class="header-brand">
-                <span class="brand-badge" data-badge="v1.0">MVC</span>
-                <h1>Tablero Interactivo</h1>
+        <header class="cabecera">
+            <!-- Fila superior: identidad a la izquierda, acciones a la derecha -->
+            <div class="cabecera-superior">
+                <div class="marca">
+                    <span class="insignia">MVC</span>
+                    <h1>Tablero Interactivo</h1>
+                </div>
+
+                <div class="grupo-acciones">
+                    <button class="boton boton-primario" data-accion="reiniciar">Nueva Partida</button>
+                    <button class="boton boton-secundario" data-accion="abrir-reglas" data-ayuda="Cómo se juega" aria-haspopup="dialog">? Reglas</button>
+                </div>
             </div>
 
-            <!-- Panel de Control Principal -->
-            <nav class="controls-panel" aria-label="Controles del juego">
-                <div class="control-group">
-                    <label for="input-size">Dimensión (N):</label>
-                    <input type="number" id="input-size" class="input-control" min="3" max="10" value="3" aria-label="Tamaño del tablero">
-                </div>
+            <!-- Ajustes agrupados por afinidad (Gestalt: proximidad y región común) -->
+            <section class="ajustes" aria-label="Ajustes de la partida">
+                <fieldset class="grupo-ajustes">
+                    <legend>Tablero</legend>
 
-                <div class="control-group">
-                    <label for="select-magnitude">Tamaño Fichas:</label>
-                    <select id="select-magnitude" class="select-control" aria-label="Magnitud de las fichas">
-                        <option value="small">Pequeña</option>
-                        <option value="medium" selected>Mediana</option>
-                        <option value="large">Grande</option>
-                    </select>
-                </div>
+                    <div class="campo">
+                        <label for="campo-dimension" class="etiqueta">Dimensión (N)</label>
+                        <input type="number" id="campo-dimension" class="control" data-ajuste="dimension" min="3" max="10" value="3">
+                    </div>
 
-                <div class="control-group">
-                    <label for="select-theme">Estilo Visual:</label>
-                    <select id="select-theme" class="select-control" aria-label="Modo o aspecto de fichas">
-                        <option value="geometric" selected>Geométrico (Círculo, Cuadrado, Triángulo)</option>
-                        <option value="rounded">Suave (Bordes Redondeados)</option>
-                    </select>
-                </div>
+                    <div class="campo" role="radiogroup" aria-labelledby="etiqueta-tamano">
+                        <span id="etiqueta-tamano" class="etiqueta">Fichas</span>
+                        <div class="selector-segmentado">
+                            <label><input type="radio" name="tamano" value="pequena" data-ajuste="tamano"><span>Pequeña</span></label>
+                            <label><input type="radio" name="tamano" value="mediana" data-ajuste="tamano" checked><span>Mediana</span></label>
+                            <label><input type="radio" name="tamano" value="grande" data-ajuste="tamano"><span>Grande</span></label>
+                        </div>
+                    </div>
+                </fieldset>
 
-                <div class="action-group">
-                    <button id="btn-restart" class="btn btn-primary">Nueva Partida</button>
-                    <button id="btn-info" class="btn btn-secondary" aria-haspopup="dialog">Reglas</button>
-                </div>
-            </nav>
+                <fieldset class="grupo-ajustes">
+                    <legend>Aspecto</legend>
+
+                    <div class="campo">
+                        <label for="selector-formas" class="etiqueta">Formas</label>
+                        <select id="selector-formas" class="control" data-ajuste="formas">
+                            <option value="geometrico" selected>Geométrico</option>
+                            <option value="suave">Suave</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="selector-colores" class="etiqueta">Colores</label>
+                        <select id="selector-colores" class="control" data-ajuste="colores">
+                            <option value="neon" selected>Neón</option>
+                            <option value="pastel">Pastel</option>
+                            <option value="accesible">Accesible</option>
+                        </select>
+                    </div>
+                </fieldset>
+            </section>
         </header>
 
         <!-- Áreas del Tablero y Asistencia -->
-        <main class="app-main">
-            <div class="board-wrapper">
-                <div id="board" class="board" data-theme="geometric"></div>
-                <div id="game-status" class="status-overlay hidden" data-status="win">
-                    <div class="status-content">
+        <main class="principal">
+            <div class="marco-tablero">
+                <div class="tablero" data-tablero data-formas="geometrico" data-colores="neon"></div>
+                <!-- Aviso flotante de asistencia (movimientos no permitidos) -->
+                <p class="aviso oculto" data-aviso role="status" aria-live="polite"></p>
+                <div class="capa-victoria oculto" data-victoria>
+                    <div class="contenido-victoria">
                         <h2>¡Enhorabuena! 🎉</h2>
                         <p>Has completado el tablero alineando correctamente cada fila.</p>
-                        <button id="btn-status-restart" class="btn btn-primary">Volver a Jugar</button>
+                        <button class="boton boton-primario" data-accion="volver-a-jugar">Volver a Jugar</button>
                     </div>
                 </div>
             </div>
         </main>
 
         <!-- Diálogo Modal de Reglas (HTML5 Dialog Semántico) -->
-        <dialog id="info-modal" class="modal-dialog">
-            <div class="modal-content">
-                <header class="modal-header">
+        <dialog class="modal" data-modal="reglas">
+            <div class="modal-contenido">
+                <header class="modal-cabecera">
                     <h2>Mecánica del Juego</h2>
-                    <button id="btn-close-modal-x" class="btn-icon" aria-label="Cerrar modal">&times;</button>
+                    <button class="boton-icono" data-accion="cerrar-reglas" aria-label="Cerrar modal">&times;</button>
                 </header>
-                <div class="modal-body">
+                <div class="modal-cuerpo">
                     <p>El objetivo del juego es reorganizar el tablero hasta que <strong>todas las fichas de cada fila sean exactamente del mismo tipo</strong>.</p>
                     <ul>
                         <li><strong>Movimiento:</strong> Arrastra y suelta una ficha sobre otra celda contigua para intercambiar sus posiciones.</li>
-                        <li><strong>Controles:</strong> Puedes modificar el número de celdas (N), el tamaño físico de las fichas y el estilo visual en cualquier momento. Al hacerlo se iniciará una nueva partida.</li>
+                        <li><strong>Tablero:</strong> Puedes cambiar la dimensión N (entre 3 y 10) y el tamaño de las fichas (pequeña, mediana o grande).</li>
+                        <li><strong>Aspecto:</strong> Elige el juego de formas (Geométrico: círculo, cuadrado y triángulo; Suave: píldora, rombo y hoja) y la paleta de colores. La paleta «Accesible» está pensada para personas con daltonismo.</li>
+                        <li>Cualquier cambio en los ajustes inicia una nueva partida.</li>
                     </ul>
                 </div>
-                <footer class="modal-footer">
-                    <button id="btn-close-info" class="btn btn-secondary">Entendido</button>
+                <footer class="modal-pie">
+                    <button class="boton boton-secundario" data-accion="cerrar-reglas">Entendido</button>
                 </footer>
             </div>
         </dialog>

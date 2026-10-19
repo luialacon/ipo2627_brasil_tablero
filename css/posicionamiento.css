@@ -1,0 +1,68 @@
+/* ==========================================================================
+   POSICIONAMIENTO
+   --------------------------------------------------------------------------
+   La composición general se resuelve con flex y grid (espacial.css).
+   position solo se usa cuando un elemento tiene que superponerse a otro:
+   - Asistencia al usuario: el tooltip se coloca bajo su control y la capa de
+     victoria cubre el tablero.
+   - Construcción de las fichas: la forma (::before) se superpone a la ficha.
+   - Elementos que deben existir pero no verse: los radios del selector
+     segmentado y el canvas que genera la imagen de arrastre.
+   ========================================================================== */
+
+/* Tooltip: relativo a su propio control, centrado debajo de él */
+[data-ayuda] {
+    position: relative;
+}
+
+[data-ayuda]::after {
+    content: attr(data-ayuda);
+    position: absolute;
+    top: calc(100% + var(--espacio-s));
+    left: 50%;
+    translate: -50% 0;
+    z-index: 20;
+}
+
+/* Capa de victoria: cubre por completo el marco del tablero */
+.marco-tablero {
+    position: relative;
+}
+
+.capa-victoria {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+}
+
+/* Aviso de movimiento no permitido: flota centrado en la parte superior del
+   tablero, encima de las celdas, sin desplazar ningún elemento */
+.aviso {
+    position: absolute;
+    top: var(--espacio-l);
+    left: 50%;
+    translate: -50% 0;
+    z-index: 15;
+}
+
+/* Fichas: la forma ocupa toda la caja de la ficha */
+.ficha {
+    position: relative;
+}
+
+.ficha::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+/* Elementos fuera del flujo visual */
+.selector-segmentado input {
+    position: absolute;
+}
+
+.lienzo-arrastre {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}

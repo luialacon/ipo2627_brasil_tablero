@@ -1,0 +1,323 @@
+/* ==========================================================================
+   DISEÑO ESPACIAL
+   --------------------------------------------------------------------------
+   Estrategia:
+   - Escala de espacios basada en una única unidad (0.5rem): todos los espacios,
+     radios y rellenos son múltiplos de ella.
+   - Unidades relativas: rem para espacios, ch para el ancho de lectura y
+     vw / dvh / % para que el tablero se adapte a la pantalla.
+   - Composición: ningún elemento usa margin. Todo nodo intermedio del DOM es un
+     contenedor flex (composición unidimensional) o grid (bidimensional: el
+     tablero) y la separación entre hijos la decide el contenedor con gap.
+   - Gestalt: proximidad (gap pequeño dentro de un grupo y mayor entre grupos) y
+     región común (cada grupo de ajustes y cada tarjeta tiene su propio borde).
+   Este fichero solo define dimensiones y distribución; los colores de los
+   bordes están en cromatico.css.
+   ========================================================================== */
+:root {
+    /* Escala de espacios */
+    --unidad: 0.5rem;
+    --espacio-xs: calc(var(--unidad) / 2);   /* 0.25rem */
+    --espacio-s: var(--unidad);              /* 0.5rem  */
+    --espacio-m: calc(var(--unidad) * 2);    /* 1rem    */
+    --espacio-l: calc(var(--unidad) * 3);    /* 1.5rem  */
+    --espacio-xl: calc(var(--unidad) * 4);   /* 2rem    */
+
+    /* Espacios fluidos: crecen con la ventana dentro de la escala */
+    --espacio-pagina: clamp(var(--espacio-m), 3vw, var(--espacio-xl));
+    --espacio-tarjeta: clamp(var(--espacio-m), 2vw, var(--espacio-l));
+
+    /* Bordes y radios */
+    --borde: 1px;
+    --radio-s: var(--unidad);
+    --radio-m: calc(var(--unidad) * 2);
+    --radio-l: calc(var(--unidad) * 3);
+
+    /* Dimensiones de los contenedores */
+    --ancho-app: 70rem;
+    --ancho-lectura: 60ch;       /* ~60 caracteres por línea */
+    --tablero-max: 40rem;
+    --alto-reservado: 21rem;     /* alto de la cabecera y espacios que el tablero no puede ocupar */
+}
+
+/* Reset: sin márgenes ni rellenos heredados del navegador */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Estructura de la página
+   -------------------------------------------------------------------------- */
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+.aplicacion {
+    width: 100%;
+    max-width: var(--ancho-app);
+    padding: var(--espacio-pagina);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-m);
+}
+
+/* --------------------------------------------------------------------------
+   Cabecera
+   -------------------------------------------------------------------------- */
+.cabecera {
+    padding: var(--espacio-tarjeta);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-l);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-m);
+}
+
+/* Marca a la izquierda, acciones a la derecha */
+.cabecera-superior {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-m);
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-s);
+}
+
+.insignia {
+    padding: var(--espacio-xs) var(--espacio-s);
+    border-radius: var(--radio-s);
+}
+
+.grupo-acciones {
+    display: flex;
+    gap: var(--espacio-s);
+}
+
+/* --------------------------------------------------------------------------
+   Ajustes: dos regiones que se ponen una al lado de la otra si caben
+   -------------------------------------------------------------------------- */
+.ajustes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-s);
+}
+
+.grupo-ajustes {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--espacio-s) var(--espacio-m);
+    padding: var(--espacio-xs) var(--espacio-m) var(--espacio-s);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-m);
+}
+
+.grupo-ajustes legend {
+    padding: 0 var(--espacio-s);
+}
+
+/* Etiqueta + control; en pantallas estrechas la etiqueta pasa encima */
+.campo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--espacio-s);
+}
+
+/* --------------------------------------------------------------------------
+   Controles
+   -------------------------------------------------------------------------- */
+.control {
+    padding: var(--espacio-s) var(--espacio-m);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-s);
+}
+
+.control[type="number"] {
+    width: calc(var(--unidad) * 9);
+}
+
+/* Selector segmentado (radios) para el tamaño de las fichas */
+.selector-segmentado {
+    display: flex;
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-s);
+    overflow: hidden;
+}
+
+.selector-segmentado label {
+    display: flex;
+}
+
+.selector-segmentado span {
+    padding: var(--espacio-s) var(--espacio-m);
+}
+
+.selector-segmentado label + label span {
+    border-left-style: solid;
+    border-left-width: var(--borde);
+}
+
+.boton {
+    padding: var(--espacio-s) var(--espacio-l);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-s);
+}
+
+.boton-icono {
+    border: none;
+}
+
+[data-ayuda]::after {
+    padding: var(--espacio-xs) var(--espacio-s);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-s);
+}
+
+/* --------------------------------------------------------------------------
+   Tablero
+   -------------------------------------------------------------------------- */
+.principal {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.marco-tablero {
+    padding: var(--espacio-tarjeta);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-l);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Composición bidimensional: rejilla N×N (N lo fija la vista en --n).
+   El tablero ocupa el espacio disponible: lo limita el ancho de la ventana,
+   el alto que deja la cabecera y un máximo. */
+.tablero {
+    --tamano-tablero: min(
+        calc(100vw - 2 * var(--espacio-pagina) - 2 * var(--espacio-tarjeta)),
+        calc(100dvh - var(--alto-reservado)),
+        var(--tablero-max)
+    );
+    width: max(16rem, var(--tamano-tablero));
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: repeat(var(--n, 3), 1fr);
+    grid-template-rows: repeat(var(--n, 3), 1fr);
+    gap: var(--espacio-s);
+}
+
+.celda {
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-m);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Magnitudes: proporción de la ficha respecto a su celda */
+.ficha[data-tamano="pequena"]  { width: 45%; height: 45%; }
+.ficha[data-tamano="mediana"] { width: 65%; height: 65%; }
+.ficha[data-tamano="grande"]  { width: 85%; height: 85%; }
+
+/* Aviso flotante: se ajusta a su texto sin superar el ancho del tablero */
+.aviso {
+    width: max-content;
+    max-width: 90%;
+    padding: var(--espacio-s) var(--espacio-m);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-s);
+}
+
+/* --------------------------------------------------------------------------
+   Capa de victoria
+   -------------------------------------------------------------------------- */
+.capa-victoria {
+    border-radius: var(--radio-l);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenido-victoria {
+    padding: var(--espacio-tarjeta);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--espacio-m);
+}
+
+/* --------------------------------------------------------------------------
+   Modal de reglas: el <dialog> ocupa la ventana y centra la tarjeta con flex
+   -------------------------------------------------------------------------- */
+.modal[open] {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    width: min(90%, var(--ancho-lectura));
+    padding: var(--espacio-tarjeta);
+    border-style: solid;
+    border-width: var(--borde);
+    border-radius: var(--radio-l);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-m);
+}
+
+.modal-cabecera {
+    padding-bottom: var(--espacio-s);
+    border-bottom-style: solid;
+    border-bottom-width: var(--borde);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-s);
+}
+
+.modal-cuerpo ul {
+    padding-left: var(--espacio-l);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-s);
+}
+
+.modal-pie {
+    display: flex;
+    justify-content: flex-end;
+}

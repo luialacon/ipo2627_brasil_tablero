@@ -1,0 +1,293 @@
+/* ==========================================================================
+   DISEÑO CROMÁTICO
+   --------------------------------------------------------------------------
+   Estrategia (modelo HSL, paleta parametrizada con var() y calc()):
+   - Interfaz MONOCROMÁTICA sobre un único tono base (índigo, 239°): fondos,
+     superficies, textos y acento solo varían en saturación, luminosidad y
+     transparencia. Así la interfaz queda en segundo plano y no compite con
+     el tablero.
+   - Fichas en TRÍADA (H, H + 120, H + 240): tres tonos equidistantes en el
+     círculo cromático, la máxima distinción posible entre los tres tipos.
+   - Paletas de fichas:
+       Neón ....... la tríada con saturación alta.
+       Pastel ..... la misma tríada con menos saturación y más luminosidad.
+       Accesible .. sustituye la tríada por la paleta Okabe-Ito, distinguible
+                    con los tipos más comunes de daltonismo.
+   - Color semántico: los avisos usan ámbar (41°), el color convencional de
+     "advertencia", como única excepción a la interfaz monocromática.
+   Cambiando --tono-base o --tono-ficha-1 se recalcula toda la paleta.
+   ========================================================================== */
+:root {
+    --tono-base: 239;
+
+    /* Interfaz monocromática */
+    --color-fondo: hsl(var(--tono-base) 40% 7%);
+    --color-fondo-degradado: hsl(var(--tono-base) 47% 20%);
+    --color-superficie: hsl(var(--tono-base) 30% 17% / 0.65);
+    --color-superficie-solida: hsl(var(--tono-base) 30% 17% / 0.95);
+    --color-superficie-hover: hsl(var(--tono-base) 25% 27% / 0.8);
+    --color-region: hsl(var(--tono-base) 45% 11% / 0.35);
+    --color-control: hsl(var(--tono-base) 45% 11% / 0.8);
+    --color-control-hover: hsl(var(--tono-base) 45% 11% / 0.95);
+    --color-tooltip: hsl(var(--tono-base) 45% 11%);
+    --color-celda: hsl(var(--tono-base) 40% 7% / 0.6);
+    --color-velo: hsl(var(--tono-base) 40% 7% / 0.92);
+    --color-velo-modal: hsl(var(--tono-base) 40% 7% / 0.8);
+    --color-boton-secundario: hsl(var(--tono-base) 30% 95% / 0.03);
+    --color-borde: hsl(var(--tono-base) 30% 95% / 0.08);
+    --color-borde-celda: hsl(var(--tono-base) 30% 95% / 0.05);
+    --color-sombra: hsl(var(--tono-base) 50% 2% / 0.6);
+
+    --color-texto: hsl(var(--tono-base) 40% 98%);
+    --color-texto-atenuado: hsl(var(--tono-base) 20% 68%);
+    --color-texto-sobre-primario: hsl(var(--tono-base) 100% 100%);
+
+    /* Acento: el mismo tono, saturado */
+    --color-primario: hsl(var(--tono-base) 84% 67%);
+    --color-primario-claro: hsl(var(--tono-base) 89% 75%);
+    --color-primario-oscuro: hsl(var(--tono-base) 75% 58%);
+    --color-primario-borde: hsl(var(--tono-base) 84% 67% / 0.3);
+    --color-primario-resplandor: hsl(var(--tono-base) 84% 67% / 0.4);
+    --color-primario-suave: hsl(var(--tono-base) 84% 67% / 0.15);
+
+    /* Color semántico de advertencia */
+    --tono-aviso: 41;
+    --color-aviso: hsl(var(--tono-aviso) 100% 65%);
+    --color-aviso-fondo: hsl(var(--tono-aviso) 60% 10%);
+
+    --sombra-tarjeta: 0 20px 40px -15px var(--color-sombra), 0 0 30px -10px var(--color-primario-suave);
+
+    /* Fichas: tríada */
+    --tono-ficha-1: 345;
+    --tono-ficha-2: calc(var(--tono-ficha-1) + 120);
+    --tono-ficha-3: calc(var(--tono-ficha-1) + 240);
+    --saturacion-fichas: 100%;
+    --luminosidad-fichas: 60%;
+}
+
+/* Los colores de las fichas se declaran también en .tablero para que se
+   recalculen con la saturación y luminosidad de la paleta elegida */
+:root,
+.tablero {
+    --color-ficha-1: hsl(var(--tono-ficha-1) var(--saturacion-fichas) var(--luminosidad-fichas));
+    --color-ficha-2: hsl(var(--tono-ficha-2) var(--saturacion-fichas) var(--luminosidad-fichas));
+    --color-ficha-3: hsl(var(--tono-ficha-3) var(--saturacion-fichas) var(--luminosidad-fichas));
+}
+
+.tablero[data-colores="pastel"] {
+    --saturacion-fichas: 85%;
+    --luminosidad-fichas: 80%;
+}
+
+.tablero[data-colores="accesible"] {
+    --color-ficha-1: hsl(41 100% 45%);   /* Naranja (Okabe-Ito) */
+    --color-ficha-2: hsl(202 77% 63%);   /* Azul cielo */
+    --color-ficha-3: hsl(327 45% 64%);   /* Púrpura rojizo */
+}
+
+/* --------------------------------------------------------------------------
+   Página y tarjetas
+   -------------------------------------------------------------------------- */
+body {
+    color: var(--color-texto);
+    background: radial-gradient(circle at 50% 0%, var(--color-fondo-degradado) 0%, var(--color-fondo) 75%) fixed var(--color-fondo);
+}
+
+.cabecera,
+.marco-tablero {
+    background-color: var(--color-superficie);
+    border-color: var(--color-borde);
+    box-shadow: var(--sombra-tarjeta);
+    backdrop-filter: blur(16px);
+}
+
+.marca h1 {
+    background: linear-gradient(135deg, var(--color-texto) 30%, var(--color-primario-claro) 70%, var(--color-primario) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 10px var(--color-primario-suave));
+}
+
+.insignia {
+    background: linear-gradient(135deg, var(--color-primario), var(--color-primario-claro));
+    color: var(--color-texto-sobre-primario);
+    box-shadow: 0 0 12px var(--color-primario-resplandor);
+}
+
+/* --------------------------------------------------------------------------
+   Ajustes y controles
+   -------------------------------------------------------------------------- */
+.grupo-ajustes {
+    background-color: var(--color-region);
+    border-color: var(--color-borde);
+}
+
+.grupo-ajustes legend {
+    color: var(--color-primario);
+}
+
+.etiqueta {
+    color: var(--color-texto-atenuado);
+}
+
+.control {
+    background-color: var(--color-control);
+    color: var(--color-texto);
+    border-color: var(--color-borde);
+    outline: none;
+}
+
+.control:hover {
+    background-color: var(--color-control-hover);
+    border-color: var(--color-primario-borde);
+}
+
+.control:focus {
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px var(--color-primario-resplandor);
+}
+
+.selector-segmentado,
+.selector-segmentado span {
+    border-color: var(--color-borde);
+}
+
+.selector-segmentado span {
+    color: var(--color-texto-atenuado);
+    background-color: var(--color-control);
+}
+
+.selector-segmentado span:hover {
+    color: var(--color-texto);
+    background-color: var(--color-superficie-hover);
+}
+
+.selector-segmentado input:checked + span {
+    color: var(--color-texto-sobre-primario);
+    background-color: var(--color-primario);
+}
+
+.selector-segmentado input:focus-visible + span {
+    outline: 2px solid var(--color-texto);
+    outline-offset: -2px;
+}
+
+/* --------------------------------------------------------------------------
+   Botones y tooltip
+   -------------------------------------------------------------------------- */
+.boton {
+    border-color: transparent;
+}
+
+.boton-primario {
+    background: linear-gradient(135deg, var(--color-primario), var(--color-primario-oscuro));
+    color: var(--color-texto-sobre-primario);
+    box-shadow: 0 4px 15px var(--color-primario-resplandor);
+}
+
+.boton-primario:hover {
+    box-shadow: 0 6px 20px var(--color-primario-resplandor);
+}
+
+.boton-secundario {
+    background-color: var(--color-boton-secundario);
+    color: var(--color-texto);
+    border-color: var(--color-borde);
+}
+
+.boton-secundario:hover {
+    background-color: var(--color-superficie-hover);
+    border-color: var(--color-primario-borde);
+}
+
+.boton-icono {
+    background: none;
+    color: var(--color-texto-atenuado);
+}
+
+.boton-icono:hover {
+    color: var(--color-texto);
+}
+
+[data-ayuda]::after {
+    background-color: var(--color-tooltip);
+    border-color: var(--color-primario-borde);
+    color: var(--color-texto);
+}
+
+/* --------------------------------------------------------------------------
+   Tablero, celdas y fichas
+   -------------------------------------------------------------------------- */
+.celda {
+    background-color: var(--color-celda);
+    border-color: var(--color-borde-celda);
+    box-shadow: inset 0 3px 6px var(--color-sombra);
+}
+
+.celda.destino {
+    background-color: var(--color-primario-suave);
+    border-color: var(--color-primario);
+    box-shadow: inset 0 0 12px var(--color-primario-resplandor), 0 0 15px var(--color-primario-resplandor);
+}
+
+/* Cada tipo toma su color de la paleta activa */
+.ficha[data-tipo="1"] { --color-ficha: var(--color-ficha-1); }
+.ficha[data-tipo="2"] { --color-ficha: var(--color-ficha-2); }
+.ficha[data-tipo="3"] { --color-ficha: var(--color-ficha-3); }
+
+.ficha::before {
+    background-color: var(--color-ficha);
+}
+
+/* Resplandor: drop-shadow proyecta sobre la silueta de la forma */
+.ficha {
+    filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--color-ficha) 60%, transparent));
+}
+
+.aviso {
+    background-color: var(--color-aviso-fondo);
+    border-color: var(--color-aviso);
+    color: var(--color-aviso);
+    box-shadow: 0 8px 20px var(--color-sombra);
+}
+
+/* --------------------------------------------------------------------------
+   Capa de victoria y modal
+   -------------------------------------------------------------------------- */
+.capa-victoria {
+    background-color: var(--color-velo);
+    backdrop-filter: blur(8px);
+}
+
+.contenido-victoria h2 {
+    background: linear-gradient(135deg, var(--color-ficha-2), var(--color-ficha-3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal[open] {
+    background: transparent;
+}
+
+.modal::backdrop {
+    background-color: var(--color-velo-modal);
+    backdrop-filter: blur(4px);
+}
+
+.modal-contenido {
+    background-color: var(--color-superficie-solida);
+    color: var(--color-texto);
+    border-color: var(--color-borde);
+    box-shadow: var(--sombra-tarjeta);
+    backdrop-filter: blur(20px);
+}
+
+.modal-cabecera {
+    border-color: var(--color-borde);
+}
+
+.modal-cuerpo ul {
+    color: var(--color-texto-atenuado);
+}

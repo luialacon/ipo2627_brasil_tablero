@@ -1,0 +1,108 @@
+/* ==========================================================================
+   INTERACCIÓN
+   --------------------------------------------------------------------------
+   Respuesta visual a las acciones del usuario: cursores, transiciones,
+   transformaciones y estados (arrastre, oculto, visible). Los colores de
+   cada estado están en cromatico.css.
+   ========================================================================== */
+
+/* Controles */
+.control {
+    cursor: pointer;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.selector-segmentado input {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.selector-segmentado span {
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Botones */
+.boton {
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease,
+                background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.boton:active {
+    transform: scale(0.96);
+}
+
+.boton-primario:hover,
+.boton-secundario:hover {
+    transform: translateY(-2px);
+}
+
+.boton-icono {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+/* Tooltip: aparece al pasar el ratón o al llegar con el teclado */
+[data-ayuda]::after {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+[data-ayuda]:hover::after,
+[data-ayuda]:focus-visible::after {
+    opacity: 1;
+}
+
+/* Celdas y fichas */
+.celda {
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ficha {
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease, opacity 0.2s ease;
+}
+
+.ficha::before {
+    transition: background-color 0.2s ease, border-radius 0.2s ease, clip-path 0.2s ease;
+}
+
+.ficha:hover {
+    transform: scale(1.08);
+}
+
+.ficha:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+.ficha.arrastrando {
+    opacity: 0.25;
+}
+
+.lienzo-arrastre {
+    pointer-events: none;
+}
+
+/* Aviso flotante: aparece y desaparece con un fundido */
+.aviso {
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.aviso.oculto {
+    opacity: 0;
+}
+
+/* Capa de victoria */
+.capa-victoria {
+    transition: opacity 0.3s ease;
+}
+
+.capa-victoria.oculto {
+    opacity: 0;
+    pointer-events: none;
+}
