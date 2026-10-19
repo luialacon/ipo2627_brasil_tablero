@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Tablero | Juego de Estrategia</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Encabezado Principal -->
+        <header class="app-header">
+            <div class="header-brand">
+                <span class="brand-badge" data-badge="v1.0">MVC</span>
+                <h1>Tablero Interactivo</h1>
+            </div>
+
+            <!-- Panel de Control Principal -->
+            <nav class="controls-panel" aria-label="Controles del juego">
+                <div class="control-group">
+                    <label for="input-size">Dimensión (N):</label>
+                    <input type="number" id="input-size" class="input-control" min="3" max="10" value="3" aria-label="Tamaño del tablero">
+                </div>
+
+                <div class="control-group">
+                    <label for="select-magnitude">Tamaño Fichas:</label>
+                    <select id="select-magnitude" class="select-control" aria-label="Magnitud de las fichas">
+                        <option value="small">Pequeña</option>
+                        <option value="medium" selected>Mediana</option>
+                        <option value="large">Grande</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="select-theme">Estilo Visual:</label>
+                    <select id="select-theme" class="select-control" aria-label="Modo o aspecto de fichas">
+                        <option value="geometric" selected>Geométrico (Círculo, Cuadrado, Triángulo)</option>
+                        <option value="rounded">Suave (Bordes Redondeados)</option>
+                    </select>
+                </div>
+
+                <div class="action-group">
+                    <button id="btn-restart" class="btn btn-primary">Nueva Partida</button>
+                    <button id="btn-info" class="btn btn-secondary" aria-haspopup="dialog">Reglas</button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Áreas del Tablero y Asistencia -->
+        <main class="app-main">
+            <div class="board-wrapper">
+                <div id="board" class="board" data-theme="geometric"></div>
+                <div id="game-status" class="status-overlay hidden" data-status="win">
+                    <div class="status-content">
+                        <h2>¡Enhorabuena! 🎉</h2>
+                        <p>Has completado el tablero alineando correctamente cada fila.</p>
+                        <button id="btn-status-restart" class="btn btn-primary">Volver a Jugar</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Diálogo Modal de Reglas (HTML5 Dialog Semántico) -->
+        <dialog id="info-modal" class="modal-dialog">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h2>Mecánica del Juego</h2>
+                    <button id="btn-close-modal-x" class="btn-icon" aria-label="Cerrar modal">&times;</button>
+                </header>
+                <div class="modal-body">
+                    <p>El objetivo del juego es reorganizar el tablero hasta que <strong>todas las fichas de cada fila sean exactamente del mismo tipo</strong>.</p>
+                    <ul>
+                        <li><strong>Movimiento:</strong> Arrastra y suelta una ficha sobre otra celda contigua para intercambiar sus posiciones.</li>
+                        <li><strong>Controles:</strong> Puedes modificar el número de celdas (N), el tamaño físico de las fichas y el estilo visual en cualquier momento. Al hacerlo se iniciará una nueva partida.</li>
+                    </ul>
+                </div>
+                <footer class="modal-footer">
+                    <button id="btn-close-info" class="btn btn-secondary">Entendido</button>
+                </footer>
+            </div>
+        </dialog>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
